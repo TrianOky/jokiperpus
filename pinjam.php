@@ -24,7 +24,7 @@ if (!$_SESSION['username']) {
             <div class="card col-12 shadow">
                 <div class="p-3 d-flex justify-content-between">
 
-                    <h2 class="">Data </h2>
+                    <h2 class="">Data Peminjaman</h2>
                     <button onclick="tambah()" class="btn btn-primary">
                         Tambah Buku
                     </button>
@@ -36,46 +36,48 @@ if (!$_SESSION['username']) {
                             <thead class="table-dark text-center">
                                 <tr>
                                     <th>NO</th>
-                                    <th>JUDUL</th>
-                                    <th>PENGARANG</th>
-                                    <th>PENERBIT</th>
-                                    <th>TAHUN</th>
-                                    <th>KATEGORI</th>
+                                    <th>JUDUL BUKU</th>
+                                    <th>NAMA PEMINJAM</th>
+                                    <th>KELAS</th>
+                                    <th>TANGGAL</th>
+                                    <th>TANGGAL KEMBALI</th>
+                                    <th>STATUS</th>
                                     <th>AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $i = 1;
-                                $result = mysqli_query($koneksi, 'SELECT * FROM buku INNER JOIN kategori ON buku.id_kategori = kategori.id_kategori');
+                                $result = mysqli_query($koneksi, 'SELECT * FROM peminjaman INNER JOIN buku ON peminjaman.id_buku = buku.id_buku INNER JOIN anggota ON peminjaman.id_anggota = anggota.id_anggota INNER JOIN kelas ON anggota.id_kelas = kelas.id_kelas');
                                 while ($row = mysqli_fetch_assoc($result)) :
                                 ?>
-                                <tr>
-                                    <td>
-                                        <?= $i ?>
-                                    </td>
-                                    <td>
-                                        <?= $row['judul'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $row['pengarang'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $row['penerbit'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $row['tahun'] ?>
-                                    </td>
-                                    <td>
-                                        <?= $row['kategori'] ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-warning my-1 my-md-0"
-                                            onclick="edit('<?= $row['judul'] ?>','<?= $row['kategori'] ?>', '<?= $row['pengarang'] ?>', '<?= $row['penerbit'] ?>','<?= $row['tahun'] ?>', '<?= $row['id_buku'] ?>')">Edit</button>
-                                        <button onclick="hapus(<?= $row['id_buku']; ?>)"
-                                            class="btn btn-danger my-1 my-md-0">Hapus</button>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            <?= $i ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['judul'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['nama'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['nama_kelas'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['tanggal'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['tanggal_kembali'] ?>
+                                        </td>
+                                        <td>
+                                            <?= $row['status'] ?>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning my-1 my-md-0" onclick="edit('<?= $row['judul'] ?>','<?= $row['nama'] ?>', '<?= $row['nama_kelas'] ?>', '<?= $row['tanggal'] ?>','<?= $row['tanggal_kembali'] ?>', '<?= $row['status'] ?>')">Edit</button>
+                                            <button onclick="hapus(<?= $row['id_peminjaman']; ?>)" class="btn btn-danger my-1 my-md-0">Hapus</button>
+                                        </td>
+                                    </tr>
                                 <?php $i++;
                                 endwhile; ?>
                             </tbody>
@@ -101,8 +103,7 @@ if (!$_SESSION['username']) {
                         <div class="mb-3">
                             <input type="hidden" name="id_buku" id="idBuku">
                             <label class="form-label">JUDUL</label>
-                            <input type="text" class="form-control" id="editJudul" name="judul"
-                                aria-describedby="emailHelp">
+                            <input type="text" class="form-control" id="editJudul" name="judul" aria-describedby="emailHelp">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">KATEGORI</label>
@@ -111,9 +112,9 @@ if (!$_SESSION['username']) {
                                 $result = mysqli_query($koneksi, 'SELECT * from kategori');
                                 while ($row = mysqli_fetch_assoc($result)) :
                                 ?>
-                                <option value="<?= $row['id_kategori'] ?>">
-                                    <?= $row['kategori'] ?>
-                                </option>
+                                    <option value="<?= $row['id_kategori'] ?>">
+                                        <?= $row['kategori'] ?>
+                                    </option>
                                 <?php endwhile; ?>
                             </select>
                         </div>
@@ -146,39 +147,34 @@ if (!$_SESSION['username']) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Data Anggota</h5>
+                    <h5 class="modal-title">Data Peminjaman</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formTambah">
                         <div class="mb-3">
-                            <label class="form-label">JUDUL</label>
+                            <label class="form-label">Judul Buku</label>
                             <input type="text" class="form-control" name="judul" aria-describedby="emailHelp">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">KATEGORI</label>
-                            <select class="form-select" name="kategori" aria-label="Default select example">
+                            <label class="form-label">Nama Peminjam</label>
+                            <input class="form-control" list="nama_peminjam" placeholder="Ketik untuk mencari data">
+                            <datalist id="nama_peminjam">
                                 <?php
-                                $result = mysqli_query($koneksi, 'SELECT * from kategori');
+                                $result = mysqli_query($koneksi, 'SELECT * from anggota INNER JOIN kelas ON anggota.id_kelas = kelas.id_kelas');
                                 while ($row = mysqli_fetch_assoc($result)) :
                                 ?>
-                                <option value="<?= $row['id_kategori'] ?>">
-                                    <?= $row['kategori'] ?>
-                                </option>
+                                    <option data-value="<?= $row['id_anggota'] ?>" value="<?= $row['nama'] ?> - <?= $row['nama_kelas'] ?>" />
                                 <?php endwhile; ?>
-                            </select>
+                            </datalist>
                         </div>
                         <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">PENGARANG</label>
-                            <input type="text" name="pengarang" class="form-control">
+                            <label for="exampleFormControlTextarea1" class="form-label">Tanggal</label>
+                            <input type="date" name="tanggal" class="form-control" value="<?= date('Y-m-d'); ?>">
                         </div>
                         <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">PENERBIT</label>
-                            <input type="text" name="penerbit" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">TAHUN</label>
-                            <input type="text" name="tahun" class="form-control">
+                            <label for="exampleFormControlTextarea1" class="form-label">Tanggal Kembali</label>
+                            <input type="date" name="tanggal_kembali" class="form-control">
                         </div>
                     </form>
                 </div>
