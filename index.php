@@ -13,7 +13,7 @@ if (!$_SESSION['username']) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include('./bootstrap.html') ?>
-    <title>Document</title>
+    <title>Home | PERPUS JALAN</title>
 </head>
 
 <body>
@@ -138,7 +138,7 @@ if (!$_SESSION['username']) {
                                         <td><?= $row['judul'] ?></td>
                                         <td><?= $row['tanggal'] ?></td>
                                         <td><?= $row['tanggal_kembali'] ?></td>
-                                        <td><?php if ($row['status'] == 0) : ?>
+                                        <td><?php if ($row['statuss'] == 0) : ?>
                                                 <span class="badge bg-danger">DIPINJAM</span>
                                             <?php else : ?>
                                                 <span class="badge bg-success">DIKEMBALIKAN</span>
