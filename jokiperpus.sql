@@ -1,256 +1,140 @@
--- phpMyAdmin SQL Dump
--- version 5.1.0
--- https://www.phpmyadmin.net/
---
--- Host: localhost:3306
--- Generation Time: Dec 08, 2021 at 04:46 AM
--- Server version: 10.5.9-MariaDB-log
--- PHP Version: 8.0.5
+/*
+ Navicat Premium Data Transfer
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+ Source Server         : local_konek
+ Source Server Type    : MySQL
+ Source Server Version : 100421
+ Source Host           : localhost:3306
+ Source Schema         : jokiperpus
 
+ Target Server Type    : MySQL
+ Target Server Version : 100421
+ File Encoding         : 65001
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+ Date: 15/12/2021 11:31:21
+*/
 
---
--- Database: `jokiperpus`
---
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
--- --------------------------------------------------------
+-- ----------------------------
+-- Table structure for anggota
+-- ----------------------------
+DROP TABLE IF EXISTS `anggota`;
+CREATE TABLE `anggota`  (
+  `nama` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `id_anggota` int NOT NULL AUTO_INCREMENT,
+  `id_kelas` int NOT NULL,
+  `alamat` longtext CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id_anggota`) USING BTREE,
+  INDEX `id_kelas`(`id_kelas`) USING BTREE,
+  CONSTRAINT `anggota_ibfk_1` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id_kelas`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
---
--- Table structure for table `anggota`
---
+-- ----------------------------
+-- Records of anggota
+-- ----------------------------
+INSERT INTO `anggota` VALUES ('Syahroful A', 1, 1, 'Dlanggu');
+INSERT INTO `anggota` VALUES ('Trian Oky R', 2, 2, 'Dlanggu');
 
-CREATE TABLE `anggota` (
-  `nama` varchar(255) NOT NULL,
-  `id_anggota` int(11) NOT NULL,
-  `id_kelas` int(11) NOT NULL,
-  `alamat` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- ----------------------------
+-- Table structure for buku
+-- ----------------------------
+DROP TABLE IF EXISTS `buku`;
+CREATE TABLE `buku`  (
+  `id_buku` int NOT NULL AUTO_INCREMENT,
+  `judul` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `pengarang` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `penerbit` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `tahun` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `id_kategori` int NOT NULL,
+  PRIMARY KEY (`id_buku`) USING BTREE,
+  INDEX `id_kategori`(`id_kategori`) USING BTREE,
+  CONSTRAINT `buku_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
---
--- Dumping data for table `anggota`
---
+-- ----------------------------
+-- Records of buku
+-- ----------------------------
+INSERT INTO `buku` VALUES (2, 'Buku BARU', 'Nubi', 'Nubi', '2003', 2);
 
-INSERT INTO `anggota` (`nama`, `id_anggota`, `id_kelas`, `alamat`) VALUES
-('Syahroful A', 1, 1, 'Dlanggu'),
-('Trian Oky R', 2, 1, 'Dlanggu');
+-- ----------------------------
+-- Table structure for kategori
+-- ----------------------------
+DROP TABLE IF EXISTS `kategori`;
+CREATE TABLE `kategori`  (
+  `id_kategori` int NOT NULL AUTO_INCREMENT,
+  `kategori` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id_kategori`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
--- --------------------------------------------------------
+-- ----------------------------
+-- Records of kategori
+-- ----------------------------
+INSERT INTO `kategori` VALUES (1, 'Komik');
+INSERT INTO `kategori` VALUES (2, 'Novel');
+INSERT INTO `kategori` VALUES (3, 'Majalah');
+INSERT INTO `kategori` VALUES (4, 'Cergam');
+INSERT INTO `kategori` VALUES (6, 'Cerita Pendek');
 
---
--- Table structure for table `buku`
---
+-- ----------------------------
+-- Table structure for kelas
+-- ----------------------------
+DROP TABLE IF EXISTS `kelas`;
+CREATE TABLE `kelas`  (
+  `id_kelas` int NOT NULL AUTO_INCREMENT,
+  `nama_kelas` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  PRIMARY KEY (`id_kelas`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
-CREATE TABLE `buku` (
-  `id_buku` int(11) NOT NULL,
-  `judul` varchar(255) NOT NULL,
-  `pengarang` varchar(255) NOT NULL,
-  `penerbit` varchar(255) NOT NULL,
-  `tahun` varchar(255) NOT NULL,
-  `id_kategori` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- ----------------------------
+-- Records of kelas
+-- ----------------------------
+INSERT INTO `kelas` VALUES (1, 'XII RPL 1');
+INSERT INTO `kelas` VALUES (2, 'XII RPL 2');
+INSERT INTO `kelas` VALUES (3, 'XI RPL 1');
+INSERT INTO `kelas` VALUES (4, 'XI RPL 2');
+INSERT INTO `kelas` VALUES (5, 'x RPL 1');
+INSERT INTO `kelas` VALUES (6, 'X RPL 2');
 
---
--- Dumping data for table `buku`
---
+-- ----------------------------
+-- Table structure for peminjaman
+-- ----------------------------
+DROP TABLE IF EXISTS `peminjaman`;
+CREATE TABLE `peminjaman`  (
+  `id_peminjaman` int NOT NULL AUTO_INCREMENT,
+  `tanggal` date NOT NULL,
+  `id_buku` int NOT NULL,
+  `id_anggota` int NOT NULL,
+  `statuss` tinyint(1) NOT NULL,
+  `tanggal_kembali` date NOT NULL,
+  PRIMARY KEY (`id_peminjaman`) USING BTREE,
+  INDEX `id_buku`(`id_buku`, `id_anggota`) USING BTREE,
+  INDEX `id_anggota`(`id_anggota`) USING BTREE,
+  CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
-INSERT INTO `buku` (`id_buku`, `judul`, `pengarang`, `penerbit`, `tahun`, `id_kategori`) VALUES
-(2, 'Buku BARU', 'Nubi', 'Nubi', '2003', 2);
+-- ----------------------------
+-- Records of peminjaman
+-- ----------------------------
+INSERT INTO `peminjaman` VALUES (11, '2021-12-14', 2, 1, 1, '2021-12-16');
+INSERT INTO `peminjaman` VALUES (13, '2021-12-15', 2, 2, 0, '2021-12-17');
 
--- --------------------------------------------------------
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`  (
+  `username` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `passsword` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `id_users` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_users`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
---
--- Table structure for table `kategori`
---
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES ('admin', '81dc9bdb52d04dc20036dbd8313ed055', 1);
 
-CREATE TABLE `kategori` (
-  `id_kategori` int(11) NOT NULL,
-  `kategori` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `kategori`
---
-
-INSERT INTO `kategori` (`id_kategori`, `kategori`) VALUES
-(1, 'Komik'),
-(2, 'Novel'),
-(3, 'Majalah'),
-(4, 'Cergam'),
-(5, 'Dongeng');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `kelas`
---
-
-CREATE TABLE `kelas` (
-  `id_kelas` int(11) NOT NULL,
-  `nama_kelas` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `kelas`
---
-
-INSERT INTO `kelas` (`id_kelas`, `nama_kelas`) VALUES
-(1, 'XII RPL 1'),
-(2, 'XII RPL 2'),
-(3, 'XI RPL 1'),
-(4, 'XI RPL 2'),
-(5, 'x RPL 1'),
-(6, 'X RPL 2');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `peminjaman`
---
-
-CREATE TABLE `peminjaman` (
-  `id_peminjaman` int(11) NOT NULL,
-  `tanggal` datetime NOT NULL,
-  `id_buku` int(11) NOT NULL,
-  `id_anggota` int(11) NOT NULL,
-  `status` tinyint(1) NOT NULL,
-  `tanggal_kembali` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `users`
---
-
-CREATE TABLE `users` (
-  `username` varchar(255) NOT NULL,
-  `passsword` varchar(255) NOT NULL,
-  `id_users` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`username`, `passsword`, `id_users`) VALUES
-('admin', '81dc9bdb52d04dc20036dbd8313ed055', 1);
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `anggota`
---
-ALTER TABLE `anggota`
-  ADD PRIMARY KEY (`id_anggota`),
-  ADD KEY `id_kelas` (`id_kelas`);
-
---
--- Indexes for table `buku`
---
-ALTER TABLE `buku`
-  ADD PRIMARY KEY (`id_buku`),
-  ADD KEY `id_kategori` (`id_kategori`);
-
---
--- Indexes for table `kategori`
---
-ALTER TABLE `kategori`
-  ADD PRIMARY KEY (`id_kategori`);
-
---
--- Indexes for table `kelas`
---
-ALTER TABLE `kelas`
-  ADD PRIMARY KEY (`id_kelas`);
-
---
--- Indexes for table `peminjaman`
---
-ALTER TABLE `peminjaman`
-  ADD PRIMARY KEY (`id_peminjaman`),
-  ADD KEY `id_buku` (`id_buku`,`id_anggota`),
-  ADD KEY `id_anggota` (`id_anggota`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_users`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `anggota`
---
-ALTER TABLE `anggota`
-  MODIFY `id_anggota` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `buku`
---
-ALTER TABLE `buku`
-  MODIFY `id_buku` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `kategori`
---
-ALTER TABLE `kategori`
-  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `kelas`
---
-ALTER TABLE `kelas`
-  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `peminjaman`
---
-ALTER TABLE `peminjaman`
-  MODIFY `id_peminjaman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `anggota`
---
-ALTER TABLE `anggota`
-  ADD CONSTRAINT `anggota_ibfk_1` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id_kelas`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `buku`
---
-ALTER TABLE `buku`
-  ADD CONSTRAINT `buku_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `peminjaman`
---
-ALTER TABLE `peminjaman`
-  ADD CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+SET FOREIGN_KEY_CHECKS = 1;
